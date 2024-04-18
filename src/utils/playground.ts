@@ -55,11 +55,13 @@ export class Circle {
 }
 
 
-export const playground = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, circle: Circle) => {
+export const playground = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, circleArray: Circle[]) => {
   ctx.globalCompositeOperation = "destination-over";
   ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-  circle.update();
+  for (let i = 0; i < circleArray.length; i++) {
+    circleArray[i].update();
+  }
 
   // for (let i = 0; i < count; i++) {
   //   const x = Math.floor(Math.random() * canvas.width);

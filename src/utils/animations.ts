@@ -1,10 +1,5 @@
+import { getRandom } from "./helper";
 import { Circle, playground } from "./playground";
-
-const x = 200;
-const y = 200;
-const dx = 5;
-const dy = 5;
-const radius = 30;
 
 export function init() {
   const canvas = document.getElementById("tutorial") as HTMLCanvasElement;
@@ -16,16 +11,28 @@ export function init() {
   const canvasHeight = canvas.height;
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-  const circle = new Circle(x, y, radius, dx, dy, canvasWidth, canvasHeight, ctx);
+  const radius = 30;
+  const count = 100;
+
+  const circleArray: Circle[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const x = getRandom(canvasHeight);
+    const y = getRandom(canvasWidth);
+    const dx = getRandom(5);
+    const dy = getRandom(5);
+    const circle = new Circle(x, y, radius, dx, dy, canvasWidth, canvasHeight, ctx);
+    circleArray.push(circle);
+  }
 
   if (canvas && ctx) {
-    window.requestAnimationFrame(() =>   animationLoop(canvas, ctx, circle));
+    window.requestAnimationFrame(() =>   animationLoop(canvas, ctx, circleArray));
   }
 }
 
-export const animationLoop = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, circle: Circle) => {
+export const animationLoop = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, circleArray: Circle[]) => {
   // playground - for testing different objects
-  playground(canvas, ctx, circle)
+  playground(canvas, ctx, circleArray)
   
-  window.requestAnimationFrame(() => animationLoop(canvas, ctx, circle));
+  window.requestAnimationFrame(() => animationLoop(canvas, ctx, circleArray));
 }
