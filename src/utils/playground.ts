@@ -1,6 +1,8 @@
 import { mouse } from "./animations";
 
 const maxRadius = 40;
+const speed = 2;
+const friction = 0.97;
 
 export class Circle {
   x: number;
@@ -40,6 +42,26 @@ export class Circle {
     this.ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
     this.ctx.fillStyle = this.color;
     this.ctx.fill();
+  }
+
+  gravity() {
+    if (this.y + this.r + this.dy > this.canvas.height) {
+      this.dy = -this.dy * friction;
+    } else {
+      this.dy += speed;
+    }
+
+    const rightSide = this.x + this.r + this.dx > this.canvas.width;
+    const leftSide = this.x - this.r < 0; 
+    if (leftSide || rightSide) {
+      this.dx = - this.dx;
+    }
+    
+    this.draw();
+
+    this.y += this.dy;
+    this.x += this.dx;
+
   }
 
   update() {
