@@ -1,5 +1,6 @@
-import { getRandom } from "./helper";
+import { mouse } from "./animations";
 
+const maxRadius = 40;
 
 export class Circle {
   x: number;
@@ -7,9 +8,10 @@ export class Circle {
   dx: number;
   dy: number;
   r: number;
-  width: number;
-  height: number;
+  minR: number;
+  color: string;
   ctx: CanvasRenderingContext2D;
+  canvas: HTMLCanvasElement
 
   constructor(
     x: number, 
@@ -17,39 +19,53 @@ export class Circle {
     r: number, 
     dx: number, 
     dy: number, 
-    width: number,
-    height: number,
-    ctx: CanvasRenderingContext2D
+    color: string,
+    ctx: CanvasRenderingContext2D,
+    canvas: HTMLCanvasElement
   ) {
     this.x = x;
     this.y = y;
     this.r = r;
     this.dx = dx;
     this.dy = dy;
+
+    this.color = color;
     this.ctx = ctx;
-    this.width = width;
-    this.height = height;
+    this.minR = r;
+    this.canvas = canvas;
   }
 
   draw() {
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
-    this.ctx.fillStyle = `rgb(${getRandom(255)} 255 ${getRandom(255)})`;
+    this.ctx.fillStyle = this.color;
     this.ctx.fill();
   }
 
   update() {
+    const canvasWidth = this.canvas.width;
+    const canvasHeight = this.canvas.height;
     this.draw();
-    if (this.x + this.r > this.width || this.x - this.r < 0) {
+
+    if (this.x + this.r > canvasWidth || this.x - this.r < 0) {
       this.dx = - this.dx;
     }
   
-    if (this.y + this.r > this.height || this.y - this.r < 0) {
+    if (this.y + this.r > canvasHeight || this.y - this.r < 0) {
       this.dy = - this.dy;
     }
   
     this.x += this.dx;
     this.y += this.dy;
+
+    const xProximity = mouse.x && ((this.x - mouse.x) < 50) && ((this.x - mouse.x) > -50);
+    const yProximity = mouse.y && ((this.y - mouse.y) < 50) && ((this.y - mouse.y) > -50)
+    if (xProximity && yProximity && this.r < maxRadius) {
+      this.ctx.fillStyle = "red";
+      this.r += 1;
+    } else if (this.r > this.minR) {
+      this.r -= 2;
+    }
 
   }
 }
@@ -62,16 +78,5 @@ export const playground = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContex
   for (let i = 0; i < circleArray.length; i++) {
     circleArray[i].update();
   }
-
-  // for (let i = 0; i < count; i++) {
-  //   const x = Math.floor(Math.random() * canvas.width);
-  //   const y = Math.floor(Math.random() * canvas.height);
-  //   const r = Math.floor(Math.random() * 50);
-  //   ctx.beginPath();
-  //   ctx.fillStyle = `rgb(${getRandom(255)} ${getRandom(255)} ${getRandom(255)})`;
-  //   ctx.arc(x, y, r, 0, 2 * Math.PI, false);
-  //   ctx.fill();
-  // }
-
 
 }
