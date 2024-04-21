@@ -1,10 +1,10 @@
-import { circleGravity } from "./gravity";
+import { collisionEffect } from "./circleCollision";
 import { generateCircles } from "./helper";
-import { Circle, playground } from "./playground";
+import { Circle } from "./Circle";
 
 interface Mouse {
-  x: number | null;
-  y: number | null;
+  x: number;
+  y: number;
 }
 
 export const mouse: Mouse = {
@@ -43,11 +43,18 @@ export function init() {
     mouse.y = event.y;
   })
 
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  })
+
   // circleAnimations(canvas, ctx);
 
   // circleCollision(canvas, ctx);
 
-  circleGravity(canvas, ctx);
+  // circleGravity(canvas, ctx);
+
+  collisionEffect(canvas, ctx);
 }
 
 const circleAnimationLoop = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, circleArray: Circle[]) => {
@@ -57,3 +64,12 @@ const circleAnimationLoop = (canvas: HTMLCanvasElement, ctx: CanvasRenderingCont
   window.requestAnimationFrame(() => circleAnimationLoop(canvas, ctx, circleArray));
 }
 
+const playground = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, circleArray: Circle[]) => {
+  ctx.globalCompositeOperation = "destination-over";
+  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+  for (let i = 0; i < circleArray.length; i++) {
+    circleArray[i].update();
+  }
+
+}
