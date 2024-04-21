@@ -1,6 +1,6 @@
 import { mouse } from "./animations";
-import { getDistance, getRandom } from "./helper";
-import { Circle } from "./playground";
+import { generateCircles, getDistance, getRandom } from "./helper";
+import { Circle } from "./Circle";
 
 export const circleCollision = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
   const canvasWidth = canvas.width;
@@ -20,24 +20,42 @@ export const circleCollision = (canvas: HTMLCanvasElement, ctx: CanvasRenderingC
   window.requestAnimationFrame(() => colllisionLoop(canvas, ctx, circle1, circle2))
 }
 
-
-
-export const colllisionLoop = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, circle1: Circle, circle2: Circle) => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-
+const detectCollision = (circle1: Circle, circle2: Circle) => {
   circle1.draw();
   circle2.x = mouse.x as number;
   circle2.y = mouse.y as number;
   circle2.update();
 
   const distance = getDistance(circle1.x, circle1.y, circle2.x, circle2.y);
-  console.log(distance);
   if (distance < circle1.r + circle2.r) {
     circle1.color = "blue";
   } else {
     circle1.color = "green";
   }
+}
+
+export const collisionEffect = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D)  => {
+  const circles: Circle[] = [];
+  const circleCount = 100;
+
+  generateCircles(canvas, ctx, circles, circleCount);
+
+  window.requestAnimationFrame(() => collisionBounceLoop(canvas, ctx, circles));
+
+}
+
+export const collisionBounceLoop = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, circles: Circle[]) => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  circles.forEach(circle => circle.updateCollision(circles));
+
+  window.requestAnimationFrame(() => collisionBounceLoop(canvas, ctx, circles));
+}
+
+export const colllisionLoop = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, circle1: Circle, circle2: Circle) => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  detectCollision(circle1, circle2);
 
   window.requestAnimationFrame(() => colllisionLoop(canvas, ctx, circle1, circle2));
 }

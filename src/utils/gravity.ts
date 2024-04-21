@@ -1,5 +1,5 @@
 import { generateCircles } from "./helper";
-import { Circle } from "./playground";
+import { Circle } from "./Circle";
 
 
 export const circleGravity = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
